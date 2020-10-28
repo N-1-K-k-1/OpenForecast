@@ -40,8 +40,14 @@ class ListCitiesActivity : AppCompatActivity(), ListView {
         list_cities.layoutManager = LinearLayoutManager(this)
         list_cities.adapter = cityAdapter
 
-        presenter.getAllCities()
+        presenter.getInitialCities()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        presenter.updateCities()
     }
 
 
@@ -87,7 +93,7 @@ class ListCitiesActivity : AppCompatActivity(), ListView {
     }
 
     override fun showError(error: String) {
-        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
     }
 
 }
