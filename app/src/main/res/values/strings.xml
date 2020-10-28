@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">OpenForecast</string>
+    <string name="failedToLoad">Something went wrong</string>
+    <string name="wrongApi">Wrong API key</string>
+    <string name="notFound">City not found</string>
+    <string name="search">Search city</string>
+    <string name="temperature">%d %s</string>
 </resources>
