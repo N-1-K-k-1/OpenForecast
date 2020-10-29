@@ -21,6 +21,7 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/city_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="5dp"
@@ -194,7 +195,7 @@
                 android:textColor="@color/white" />
 
             <View
-                android:layout_width="340dp"
+                android:layout_width="320dp"
                 android:layout_height="1dp"
                 android:background="@android:color/white"
                 android:paddingStart="25dp"
@@ -552,7 +553,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/last_update"
                 android:textColor="@color/white" />
 
             <TextView
@@ -566,6 +566,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:paddingTop="40dp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -581,20 +582,20 @@
                     android:layout_height="wrap_content"
                     android:text="@string/sunrise"
                     android:textColor="@color/white"
-                    android:textSize="12sp" />
+                    android:textSize="14sp" />
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
                     android:src="@drawable/ic_sunrise_25"
                     tools:ignore="ContentDescription" />
 
                 <TextView
-                    android:id="@+id/tv_sunrise"
+                    android:id="@+id/today_sunrise"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:textSize="12sp"
+                    android:textSize="14sp"
                     tools:text="06:00" />
 
             </LinearLayout>
@@ -612,20 +613,20 @@
                     android:layout_height="wrap_content"
                     android:text="@string/sunset"
                     android:textColor="@color/white"
-                    android:textSize="12sp" />
+                    android:textSize="14sp" />
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
                     android:src="@drawable/ic_sunset_25"
                     tools:ignore="ContentDescription,TooManyViews" />
 
                 <TextView
-                    android:id="@+id/tv_sunset"
+                    android:id="@+id/today_sunset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:textSize="12sp"
+                    android:textSize="14sp"
                     tools:text="00:00" />
 
             </LinearLayout>

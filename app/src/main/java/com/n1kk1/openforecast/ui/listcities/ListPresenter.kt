@@ -11,9 +11,10 @@ import com.n1kk1.openforecast.R
 import com.n1kk1.openforecast.utils.AsyncTask.executeAsyncTask
 import com.n1kk1.openforecast.api.Common
 import com.n1kk1.openforecast.api.WeatherService
-import com.n1kk1.openforecast.model.response.CurrentWeather
+import com.n1kk1.openforecast.model.response.CurrentWeatherResponse
 import com.n1kk1.openforecast.model.database.AppDatabase.Companion.getInstance
 import com.n1kk1.openforecast.model.database.City
+import com.n1kk1.openforecast.model.response.toCity
 import com.n1kk1.openforecast.utils.GeoData
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -58,20 +59,13 @@ class ListPresenter(private val context: Context, private val homeView: ListView
 
                             cities.forEach {city ->
                                 mService.getCurrentWeather(city.name, geoData.getLanguage()).enqueue(
-                                    object : retrofit2.Callback<CurrentWeather> {
+                                    object : retrofit2.Callback<CurrentWeatherResponse> {
                                         override fun onResponse(
-                                            call: Call<CurrentWeather>,
-                                            response: Response<CurrentWeather>
+                                            call: Call<CurrentWeatherResponse>,
+                                            response: Response<CurrentWeatherResponse>
                                         ) {
                                             if (response.isSuccessful) {
-                                                response.body()?.main?.temp?.let { temp ->
-                                                    response.body()?.name?.let {name ->
-                                                        City(
-                                                            name,
-                                                            temp
-                                                        )
-                                                    }
-                                                }?.let { city ->
+                                                response.toCity()?.let { city ->
                                                     doAsync {
                                                         getInstance(context).cityDao().update(city)
                                                     }
@@ -102,7 +96,7 @@ class ListPresenter(private val context: Context, private val homeView: ListView
                                             }
                                         }
 
-                                        override fun onFailure(call: Call<CurrentWeather>, t: Throwable) {
+                                        override fun onFailure(call: Call<CurrentWeatherResponse>, t: Throwable) {
                                             homeView.showError((context as AppCompatActivity).getString(R.string.failedToLoad))
                                         }
                                     }
@@ -126,23 +120,44 @@ class ListPresenter(private val context: Context, private val homeView: ListView
         geoData = GeoData(context)
 
         mService.getCurrentWeather(city, geoData.getLanguage()).enqueue(
-            object : retrofit2.Callback<CurrentWeather>{
-                override fun onResponse(call: Call<CurrentWeather>, response: Response<CurrentWeather>) {
+            object : retrofit2.Callback<CurrentWeatherResponse>{
+                override fun onResponse(call: Call<CurrentWeatherResponse>, response: Response<CurrentWeatherResponse>) {
                     if (response.isSuccessful) {
-                        response.body()?.main?.temp?.let { temp ->
-                            response.body()?.name?.let {
-                                City(
-                                    it,
-                                    temp
-                                )
+                        response.body()?.name?.let { name ->
+                            response.body()?.main?.temp?.let { temp ->
+                                response.body()?.main?.pressure?.let { pressure ->
+                                    response.body()?.main?.humidity?.let { humidity ->
+                                        response.body()?.sys?.sunrise?.let { sunrise ->
+                                            response.body()?.sys?.sunset?.let { sunset ->
+                                                response.body()?.wind?.speed?.let { windSpeed ->
+                                                    response.body()?.weather?.get(0)?.description?.let {description ->
+                                                        response.body()?.weather?.get(0)?.icon?.let {icon ->
+                                                            City(
+                                                                name = name,
+                                                                temp = temp,
+                                                                pressure = pressure,
+                                                                humidity = humidity,
+                                                                sunrise = sunrise,
+                                                                sunset = sunset,
+                                                                windSpeed = windSpeed,
+                                                                description = description,
+                                                                icon = icon
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }?.let { city ->
                             doAsync {
                                 getInstance(context).cityDao().insert(city)
                                 val results = getInstance(context).cityDao().getAll()
-                                println(results)
                                 uiThread {
                                     homeView.showListCities(results)
+                                    println(results)
                                 }
                             }
                         }
@@ -157,7 +172,7 @@ class ListPresenter(private val context: Context, private val homeView: ListView
                     }
                 }
 
-                override fun onFailure(call: Call<CurrentWeather>, t: Throwable) {
+                override fun onFailure(call: Call<CurrentWeatherResponse>, t: Throwable) {
                     homeView.showError((context as AppCompatActivity).getString(R.string.failedToLoad))
                 }
             }
@@ -175,7 +190,7 @@ class ListPresenter(private val context: Context, private val homeView: ListView
     }
 
     fun clickOnCity(city: City){
-
+        homeView.startWeatherActivity(city)
     }
 
 }

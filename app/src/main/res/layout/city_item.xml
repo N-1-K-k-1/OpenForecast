@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/cardViewBackground"
     app:cardElevation="8dp">
 
     <LinearLayout
@@ -15,31 +16,31 @@
 
         <TextView
             android:id="@+id/city_name"
+            style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_marginStart="10dp"
             android:text="City Name"
             android:textSize="24sp"
-            android:layout_marginStart = "10dp"
             tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/temp"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
             android:text="0 \u2103"
-            android:layout_marginStart = "10dp"
             android:textSize="24sp"
-            android:layout_weight = "1"
             tools:ignore="HardcodedText" />
 
         <View
             android:id="@+id/v_close"
-            android:background="@drawable/ic_baseline_close_24"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical|end"
-            android:layout_marginEnd="10dp" />
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/ic_baseline_close_24" />
 
     </LinearLayout>
 

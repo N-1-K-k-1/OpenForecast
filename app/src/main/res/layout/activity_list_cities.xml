@@ -4,12 +4,14 @@
     android:id="@+id/bookmarks"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.listcities.ListCitiesActivity">
+    tools:context=".ui.listcities.ListCitiesActivity"
+    android:background="@color/mainBackground">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_cities"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/mainBackground">
 
     </androidx.recyclerview.widget.RecyclerView>
 </androidx.constraintlayout.widget.ConstraintLayout>

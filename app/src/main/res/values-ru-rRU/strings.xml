@@ -13,5 +13,5 @@
     <string name="percent">%</string>
     <string name="wind_speed">м/с</string>
     <string name="next_7_days">Следующие 7 дней</string>
-    <string name="last_update">Последнее обновление:</string>
+    <string name="last_update">Последнее обновление: %s</string>
 </resources>

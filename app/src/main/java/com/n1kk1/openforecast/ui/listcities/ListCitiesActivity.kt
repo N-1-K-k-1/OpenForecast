@@ -2,6 +2,7 @@ package com.n1kk1.openforecast.ui.listcities
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -12,6 +13,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.n1kk1.openforecast.R
 import com.n1kk1.openforecast.model.database.City
+import com.n1kk1.openforecast.ui.forecast.ForecastActivity
 import kotlinx.android.synthetic.main.activity_list_cities.*
 
 class ListCitiesActivity : AppCompatActivity(), ListView {
@@ -37,6 +39,8 @@ class ListCitiesActivity : AppCompatActivity(), ListView {
         toolbar = supportActionBar!!
         toolbar.title = getString(R.string.search)
 
+        /* View */
+        list_cities.setHasFixedSize(true)
         list_cities.layoutManager = LinearLayoutManager(this)
         list_cities.adapter = cityAdapter
 
@@ -88,8 +92,10 @@ class ListCitiesActivity : AppCompatActivity(), ListView {
         cityAdapter.setItems(cities)
     }
 
-    override fun startWeatherActivity(city: String) {
-        TODO("Not yet implemented")
+    override fun startWeatherActivity(city: City) {
+        val intent = Intent(this, ForecastActivity::class.java)
+        intent.putExtra("name", city)
+        startActivity(intent)
     }
 
     override fun showError(error: String) {

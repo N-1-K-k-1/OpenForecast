@@ -5,10 +5,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.n1kk1.openforecast.CityDao
+import com.n1kk1.openforecast.ForecastDao
 
-@Database(entities = [City::class], version = 1)
+@Database(entities = [City::class, Forecast::class], version = 4)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun cityDao(): CityDao
+    abstract fun forecastDao(): ForecastDao
 
     companion object {
         @JvmStatic
