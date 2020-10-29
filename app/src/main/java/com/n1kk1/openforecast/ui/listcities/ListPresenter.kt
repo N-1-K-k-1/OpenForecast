@@ -47,7 +47,7 @@ class ListPresenter(private val context: Context, private val homeView: ListView
         geoData = GeoData(context)
 
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        connectivityManager?.let {
+        connectivityManager.let {
             it.registerNetworkCallback(
                 NetworkRequest.Builder().build(),
                 object : ConnectivityManager.NetworkCallback() {

@@ -5,4 +5,12 @@
     <string name="notFound">City not found</string>
     <string name="search">Search city</string>
     <string name="temperature">%d %s</string>
+    <string name="sunrise">SUNRISE</string>
+    <string name="sunset">SUNSET</string>
+    <string name="celsius">℃</string>
+    <string name="hpa">hPa</string>
+    <string name="percent">%</string>
+    <string name="wind_speed">m/s</string>
+    <string name="next_7_days">Next 7 Days</string>
+    <string name="last_update">LAST UPDATE:</string>
 </resources>
