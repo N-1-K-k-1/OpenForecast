@@ -41,9 +41,8 @@ fun Forecast.toForecastEntity(): ForecastEntity {
     }
 
     val formatDay = SimpleDateFormat("E", Locale.getDefault())
-    val formatLastUpdate = SimpleDateFormat("d MMM HH:mm", Locale.ENGLISH)
-    val formatSunTime = SimpleDateFormat("HH:mm", Locale.ENGLISH)
-    println("$firstDay $secondDay $thirdDay ${Date()}")
+    val formatLastUpdate = SimpleDateFormat("d MMM HH:mm", Locale.getDefault())
+    val formatSunTime = SimpleDateFormat("HH:mm", Locale.getDefault())
 
     return ForecastEntity(
         name = name,

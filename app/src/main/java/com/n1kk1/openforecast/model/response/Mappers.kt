@@ -1,16 +1,11 @@
 package com.n1kk1.openforecast.model.response
 
-import android.util.Log
 import com.n1kk1.openforecast.model.database.City
 import com.n1kk1.openforecast.model.database.Forecast
 import retrofit2.Response
 import java.util.*
 
 fun Response<ForecastResponse>.toForecast(city: City): Forecast {
-
-    val size = body()?.list?.size
-
-    Log.e("SIZE", size.toString())
             return Forecast(
                 name = city.name,
                 todayTemp = city.temp,
@@ -57,7 +52,6 @@ fun Response<ForecastResponse>.toForecast(city: City): Forecast {
 }
 
 fun Response<CurrentWeatherResponse>.toCity(): City? {
-    Log.e("City", "UPDATED")
     return body()?.name?.let {name ->
         body()?.main?.temp?.let { temp ->
             body()?.main?.pressure?.let { pressure ->

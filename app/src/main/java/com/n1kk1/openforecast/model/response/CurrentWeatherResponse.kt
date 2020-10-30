@@ -1,7 +1,5 @@
 package com.n1kk1.openforecast.model.response
 
-import com.google.gson.annotations.SerializedName
-
 class CurrentWeatherResponse {
 
     val coord : Coord? = null

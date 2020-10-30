@@ -13,4 +13,7 @@ interface ForecastDao {
 
     @Update
     fun update(forecast: Forecast)
+
+    @Query("DELETE FROM forecast WHERE name = :name")
+    fun delete(name: String)
 }

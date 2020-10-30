@@ -1,22 +1,26 @@
 package com.n1kk1.openforecast.ui.forecast
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.n1kk1.openforecast.R
 import com.n1kk1.openforecast.model.database.City
+import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_forecast.*
-import kotlin.math.roundToInt
 
 class ForecastActivity : AppCompatActivity(), ForecastView {
 
     private lateinit var toolbar: androidx.appcompat.app.ActionBar
     private lateinit var city: City
     private lateinit var presenter: ForecastPresenter
+    private lateinit var dialog: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forecast)
+
+        dialog = SpotsDialog.Builder().setContext(this).build()
 
         presenter = ForecastPresenter(this, this as ForecastView)
 
@@ -26,6 +30,9 @@ class ForecastActivity : AppCompatActivity(), ForecastView {
         city = intent.extras?.getParcelable<City>("name") as City
 
         presenter.refreshForecast(city)
+        forecast_refresh.setOnRefreshListener {
+            presenter.refreshForecast(city)
+        }
     }
 
     override fun showForecast(forecast: ForecastEntity) {
@@ -73,9 +80,18 @@ class ForecastActivity : AppCompatActivity(), ForecastView {
 
         today_sunrise.text = forecast.sunrise
         today_sunset.text = forecast.sunset
+        dialog.dismiss()
     }
 
     override fun showError(error: String) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun hideSpinner() {
+        forecast_refresh.isRefreshing = false
+    }
+
+    override fun showSpinner() {
+        forecast_refresh.isRefreshing = true
     }
 }

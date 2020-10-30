@@ -45,7 +45,7 @@ class ListPresenter(private val context: Context, private val homeView: ListView
 
     fun updateCities(){
         mService = Common.weatherService
-        geoData = GeoData(context)
+        geoData = GeoData()
 
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         connectivityManager.let {
@@ -53,6 +53,8 @@ class ListPresenter(private val context: Context, private val homeView: ListView
                 NetworkRequest.Builder().build(),
                 object : ConnectivityManager.NetworkCallback() {
                     override fun onAvailable(network: Network) {
+                        super.onAvailable(network)
+
                         Log.e("NETWORK", "Available")
                         doAsync {
                             val cities = getInstance(context).cityDao().getAll()
@@ -106,7 +108,6 @@ class ListPresenter(private val context: Context, private val homeView: ListView
                             val results = getInstance(context).cityDao().getAll()
                             uiThread {
                                 homeView.showListCities(results)
-                                Log.e("Cities", results.toString())
                             }
                         }
                     }
@@ -117,7 +118,7 @@ class ListPresenter(private val context: Context, private val homeView: ListView
 
     fun addCity(city: String){
         mService = Common.weatherService
-        geoData = GeoData(context)
+        geoData = GeoData()
 
         mService.getCurrentWeather(city, geoData.getLanguage()).enqueue(
             object : retrofit2.Callback<CurrentWeatherResponse>{
@@ -157,7 +158,6 @@ class ListPresenter(private val context: Context, private val homeView: ListView
                                 val results = getInstance(context).cityDao().getAll()
                                 uiThread {
                                     homeView.showListCities(results)
-                                    println(results)
                                 }
                             }
                         }
@@ -183,6 +183,7 @@ class ListPresenter(private val context: Context, private val homeView: ListView
         (context as AppCompatActivity).lifecycleScope.executeAsyncTask(onPreExecute = {
         }, doInBackground = {
             getInstance(context).cityDao().delete(city)
+            getInstance(context).forecastDao().delete(city.name)
             getInstance(context).cityDao().getAll()
         }, onPostExecute = {
             homeView.showListCities(it)

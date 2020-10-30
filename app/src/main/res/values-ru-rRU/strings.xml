@@ -14,4 +14,5 @@
     <string name="wind_speed">м/с</string>
     <string name="next_7_days">Следующие 7 дней</string>
     <string name="last_update">Последнее обновление: %s</string>
+    <string name="cant_update">Нельзя обновить в оффлайн режиме</string>
 </resources>

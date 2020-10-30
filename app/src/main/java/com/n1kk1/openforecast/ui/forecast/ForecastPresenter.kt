@@ -5,6 +5,8 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.n1kk1.openforecast.R
 import com.n1kk1.openforecast.api.Common
 import com.n1kk1.openforecast.api.WeatherService
 import com.n1kk1.openforecast.model.database.AppDatabase.Companion.getInstance
@@ -15,6 +17,7 @@ import com.n1kk1.openforecast.model.response.ForecastResponse
 import com.n1kk1.openforecast.model.response.toCity
 import com.n1kk1.openforecast.model.response.toForecast
 import com.n1kk1.openforecast.utils.GeoData
+import com.n1kk1.openforecast.utils.CheckNetwork.isInternetAvailable
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import retrofit2.Call
@@ -28,76 +31,136 @@ class ForecastPresenter(private val context: Context, private val forecastView: 
 
     fun refreshForecast(city: City) {
         mService = Common.weatherService
-        geoData = GeoData(context)
+        geoData = GeoData()
 
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        connectivityManager.let {
-            it.registerNetworkCallback(
-                NetworkRequest.Builder().build(),
-                object : ConnectivityManager.NetworkCallback() {
-                    override fun onAvailable(network: Network) {
-                        Log.e("NETWORK", "Available")
-
-                        mService.getCurrentWeather(city.name, geoData.getLanguage()).enqueue(
-                            object : retrofit2.Callback<CurrentWeatherResponse> {
-                                override fun onResponse(
-                                    call: Call<CurrentWeatherResponse>,
-                                    response: Response<CurrentWeatherResponse>
-                                ) {
-                                    if (response.isSuccessful) {
-                                        response.toCity()
-                                    } else {
-                                        Log.e("Error", response.message())
-                                    }
-                                }
-
-                                override fun onFailure(
-                                    call: Call<CurrentWeatherResponse>,
-                                    t: Throwable
-                                ) {
-                                    Log.e("Error", "err")
-                                }
+        forecastView.showSpinner()
+        if (!isInternetAvailable(context)) {
+            Log.e("NETWORK", "UNAVAILABLE")
+            doAsync {
+                val results = getInstance(context).forecastDao().getByName(city.name)
+                @Suppress("SENSELESS_COMPARISON")
+                if (results != null) {
+                    uiThread {
+                        forecastView.showForecast(results.toForecastEntity())
+                        forecastView.hideSpinner()
+                        forecastView.showError((context as AppCompatActivity).getString(R.string.cant_update))
+                    }
+                } else {
+                    uiThread {
+                        forecastView.showError((context as AppCompatActivity).getString(R.string.failedToLoad))
+                        forecastView.hideSpinner()
+                        context.finish()
+                    }
+                }
+            }
+        } else {
+            Log.e("NETWORK", "Available")
+            mService.getCurrentWeather(city.name, geoData.getLanguage()).enqueue(
+                object : retrofit2.Callback<CurrentWeatherResponse> {
+                    override fun onResponse(
+                        call: Call<CurrentWeatherResponse>,
+                        response: Response<CurrentWeatherResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            response.toCity()
+                        } else {
+                            when (response.code()) {
+                                400 -> forecastView.showError(
+                                    (context as AppCompatActivity).getString(
+                                        R.string.wrongApi
+                                    )
+                                )
+                                403 -> forecastView.showError(
+                                    (context as AppCompatActivity).getString(
+                                        R.string.wrongApi
+                                    )
+                                )
+                                404 -> forecastView.showError(
+                                    (context as AppCompatActivity).getString(
+                                        R.string.notFound
+                                    )
+                                )
+                                else -> forecastView.showError(
+                                    (context as AppCompatActivity).getString(
+                                        R.string.failedToLoad
+                                    )
+                                )
                             }
+                        }
+                        forecastView.hideSpinner()
+                    }
+
+                    override fun onFailure(
+                        call: Call<CurrentWeatherResponse>,
+                        t: Throwable
+                    ) {
+                        forecastView.showError(
+                            (context as AppCompatActivity).getString(
+                                R.string.failedToLoad
+                            )
                         )
-
-                        mService.getForecast(city.name, geoData.getLanguage()).enqueue(
-                            object : retrofit2.Callback<ForecastResponse> {
-                                override fun onResponse(
-                                    call: Call<ForecastResponse>,
-                                    response: Response<ForecastResponse>
-                                ) {
-                                    if (response.isSuccessful) {
-                                        doAsync {
-                                            getInstance(context).forecastDao().insert(response.toForecast(city))
-                                            println(
-                                                getInstance(context).forecastDao()
-                                                    .getByName(city.name)
-                                            )
-                                            val results = getInstance(context).forecastDao().getByName(city.name)
-                                            uiThread {
-                                                forecastView.showForecast(results.toForecastEntity())
-                                                println(results)
-                                            }
-                                        }
-                                    } else {
-                                        Log.e("Error", response.message())
-                                    }
-                                }
-
-                                override fun onFailure(
-                                    call: Call<ForecastResponse>,
-                                    t: Throwable
-                                ) {
-                                    Log.e("Error", "err")
-                                }
-                            }
-                        )
-
+                        forecastView.hideSpinner()
                     }
                 }
             )
+
+            mService.getForecast(city.name, geoData.getLanguage()).enqueue(
+                object : retrofit2.Callback<ForecastResponse> {
+                    override fun onResponse(
+                        call: Call<ForecastResponse>,
+                        response: Response<ForecastResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            doAsync {
+                                getInstance(context).forecastDao()
+                                    .insert(response.toForecast(city))
+                                val results = getInstance(context).forecastDao()
+                                    .getByName(city.name)
+                                uiThread {
+                                    forecastView.showForecast(results.toForecastEntity())
+                                }
+                            }
+                        } else {
+                            when (response.code()) {
+                                400 -> forecastView.showError(
+                                    (context as AppCompatActivity).getString(
+                                        R.string.wrongApi
+                                    )
+                                )
+                                403 -> forecastView.showError(
+                                    (context as AppCompatActivity).getString(
+                                        R.string.wrongApi
+                                    )
+                                )
+                                404 -> forecastView.showError(
+                                    (context as AppCompatActivity).getString(
+                                        R.string.notFound
+                                    )
+                                )
+                                else -> forecastView.showError(
+                                    (context as AppCompatActivity).getString(
+                                        R.string.failedToLoad
+                                    )
+                                )
+                            }
+                        }
+                        forecastView.hideSpinner()
+                    }
+
+                    override fun onFailure(
+                        call: Call<ForecastResponse>,
+                        t: Throwable
+                    ) {
+                        forecastView.showError(
+                            (context as AppCompatActivity).getString(
+                                R.string.failedToLoad
+                            )
+                        )
+                        forecastView.hideSpinner()
+                    }
+                }
+            )
+            forecastView.hideSpinner()
         }
     }
-
 }
