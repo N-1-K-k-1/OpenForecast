@@ -22,7 +22,7 @@
 <a name="demo"></a>
 ## Demo
 
-![](test_resized.gif)
+<img src="https://github.com/N-1-K-k-1/OpenForecast/blob/master/test.gif?raw=true" width="360" height="740"/>
 
 <a name="tools"></a>
 ## Languages, libraries and tools used
