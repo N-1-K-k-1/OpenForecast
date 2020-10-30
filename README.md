@@ -8,15 +8,13 @@
  <a name="tasks"></a>
 ## Assigned tasks
 - Load weather from [OpenWeather API](https://openweathermap.org/api)
-- Add at least 2 cities by default (Saint-Petersburg and Moscow)
+- Weather for at least 2 cities by default (Saint-Petersburg and Moscow)
 - Ability to add new city
 - Ability to delete the selected city
 - Сities should be displayed with temperatures in each city
 - Ability to view detailed information about the weather in the selected city, as well as a 7-day weather forecast
 - Ability to view saved weather in offline mode
 - Automatically update the weather when an internet connection appears
-- Ability to search news by keyword, language, sorted by popularity or date of publication
-- Visualize news headlines organized in two categories: Local news and World news
 - 2 languages supported (EN, RU)
 
 <a name="demo"></a>
