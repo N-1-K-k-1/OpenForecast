@@ -19,10 +19,10 @@
 - Visualize news headlines organized in two categories: Local news and World news
 - 2 languages supported (EN, RU)
 
-<a name="gif"></a>
-## Gif
+<a name="demo"></a>
+## Demo
 
-![](test.gif)
+![](test_resized.gif)
 
 <a name="tools"></a>
 ## Languages, libraries and tools used
